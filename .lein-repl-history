@@ -1,1 +1,27 @@
 (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
+Welcome,
+type something here...
+----- Scroll down for help -----
+*some example usages*
+====== To do list ========
+a). buy iphone 6S plus
+b). forward that sms to jane
+c). do research 'if humpty dumpty really sat on that wall'
+====== To watch ========
+a). GOT S06E01
+b). Sherlock S04E03
+c). Avengers 3
+====== New Habits =======
+a). drink water every hour
+b). brush twice daily
+[find settings icon at bottom-right]
+* * possibilities are endless * *
+* * * *  thank you * * * *
+* * * * * * * * * * *
+* * * * * * * * *
+* * * * * * *
+* * * * *
+* * *
+*(use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
+(use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
+(require '[figwheel-sidecar.repl-api :as figwheel]) (figwheel/cljs-repl)

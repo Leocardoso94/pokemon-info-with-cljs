@@ -9,12 +9,6 @@
  (fn [_ _]
    db/default-db))
 
-(re-frame/dispatch
- [::re-graph/init
-  {:ws-url nil
-   :http-url "https://graphql-pokemon.now.sh/"
-   :http-parameters         {:with-credentials? false}}])
-
 (re-frame/reg-event-db
  ::update-pokemon-name
  (fn [db [_ pokemon-name]]
@@ -23,8 +17,8 @@
 (re-frame/reg-event-db
  ::fetch-pokemon
  (fn [db [_ {:keys [data errors] :as payload}]]
-   (println payload)
-   (if (nil? errors) db
-       (assoc db :pokemon (:pokemon data)))))
+   (if (nil? errors)
+     (assoc db :pokemon (:pokemon data))
+     db)))
 
 

@@ -6,6 +6,7 @@ query ($name:String!){
   pokemon(name: $name) {
     id
     number
+    image
     name
     attacks {
       special {

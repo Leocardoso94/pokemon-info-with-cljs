@@ -2,4 +2,5 @@
 
 (def default-db
   {:name "Pokemon information"
-   :pokemon-name "Pikachu"})
+   :pokemon-name "Pikachu"
+   :pokemon nil})

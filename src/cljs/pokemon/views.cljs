@@ -6,7 +6,10 @@
    [pokemon.events :as events]
    [pokemon.queries :as q]))
 
-(println q/pokemon-query)
+(re-frame/dispatch [::re-graph/query
+                    q/pokemon-query
+                    {:name "Pikachu"}
+                    [::events/fetch-pokemon]])
 
 (defn pokemon-input []
   (let [pokemon-name (re-frame/subscribe [::subs/pokemon-name])]

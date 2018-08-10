@@ -25,3 +25,16 @@ b). brush twice daily
 *(use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
 (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
 (require '[figwheel-sidecar.repl-api :as figwheel]) (figwheel/cljs-repl)
+(use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
+Export note as .txt file
+change font
+change text size
+change window size
+choose theme(new)
+multi-browser sync 
+Need new features?
+Love this awesome app?
+Share about this app
+Tweet about this app
+Donate us$$$
+(require '[figwheel-sidecar.repl-api :as figwheel]) (figwheel/cljs-repl)

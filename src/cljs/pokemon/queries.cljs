@@ -1,36 +1,24 @@
 (ns pokemon.queries)
 
-(def pokemon-query
+(def pokemon
   "
-query ($name:String!){
+query ($name: String!){
   pokemon(name: $name) {
     id
     number
     image
     name
-    attacks {
-      special {
-        name
-        type
-        damage
-      }
-    }
-    evolutions {
-      id
-      number
-      name
-      weight {
-        minimum
-        maximum
-      }
-      attacks {
-        fast {
-          name
-          type
-          damage
-        }
-      }
-    }
+    types
+  }
+}
+")
+
+(def pokemons
+  "
+query ($first: Int!){
+  pokemons(first: $first) {
+    id
+    name
   }
 }
 ")

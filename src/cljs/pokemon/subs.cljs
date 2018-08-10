@@ -16,3 +16,8 @@
  ::pokemon
  (fn [db]
    (:pokemon db)))
+
+(re-frame/reg-sub
+ ::pokemons
+ (fn [db]
+   (:pokemons db)))

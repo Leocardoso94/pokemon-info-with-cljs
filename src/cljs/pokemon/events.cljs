@@ -15,6 +15,13 @@
    (assoc db :pokemon-name pokemon-name)))
 
 (re-frame/reg-event-db
+ ::pokemons
+ (fn [db [_ {:keys [data errors] :as payload}]]
+    (if (nil? errors)
+      (assoc db :pokemons (:pokemons data))
+      db)))
+
+(re-frame/reg-event-db
  ::fetch-pokemon
  (fn [db [_ {:keys [data errors] :as payload}]]
    (if (nil? errors)

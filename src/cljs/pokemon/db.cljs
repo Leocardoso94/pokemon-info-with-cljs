@@ -1,8 +1,9 @@
 (ns pokemon.db)
 
 (def default-db
-  {:name "Pokemon information"
+  {:name "Pokémon"
    :pokemon-name "Pikachu"
-   :pokemon nil
+   :pokemon {}
+   :pokemons []
    :re-graph {:http-url "https://graphql-pokemon.now.sh/"
               :http-parameters {:with-credentials? false}}})

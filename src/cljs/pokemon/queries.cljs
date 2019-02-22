@@ -20,5 +20,5 @@ query ($first: Int!){
     id
     name
   }
-}
+} 
 ")

@@ -37,4 +37,5 @@ Love this awesome app?
 Share about this app
 Tweet about this app
 Donate us$$$
+(use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl)
 (require '[figwheel-sidecar.repl-api :as figwheel]) (figwheel/cljs-repl)

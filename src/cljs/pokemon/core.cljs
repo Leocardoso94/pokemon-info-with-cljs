@@ -1,22 +1,21 @@
 (ns pokemon.core
-  (:require
-   [reagent.core :as reagent]
-   [re-frame.core :as re-frame]
-   [pokemon.events :as events]
-   [pokemon.views :as views]
-   [pokemon.config :as config]))
+  (:require [reagent.core :as reagent]
+            [re-frame.core :as re-frame]
+            [pokemon.events :as events]
+            [pokemon.views :as views]
+            [pokemon.config :as config]))
 
-(defn dev-setup []
-  (when config/debug?
-    (enable-console-print!)
-    (println "dev mode")))
+(defn dev-setup
+  []
+  (when config/debug? (enable-console-print!) (println "dev mode")))
 
-(defn mount-root []
+(defn mount-root
+  []
   (re-frame/clear-subscription-cache!)
-  (reagent/render [views/main-panel]
-                  (.getElementById js/document "app")))
+  (reagent/render [views/main-panel] (.getElementById js/document "app")))
 
-(defn ^:export init []
+(defn ^:export init
+  []
   (re-frame/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))

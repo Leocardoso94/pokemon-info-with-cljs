@@ -6,4 +6,4 @@
   [event]
   (-> event
       .-target
-      .-value))     
+      .-value))

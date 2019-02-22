@@ -1,8 +1,15 @@
 (ns pokemon.events
   (:require [re-frame.core :as re-frame]
-            [pokemon.db :as db]))
+            [re-graph.core :as re-graph]
+            [pokemon.db :as db]
+            [pokemon.queries :as q]))
 
-(re-frame/reg-event-db ::initialize-db (fn [_ _] db/default-db))
+(re-frame/reg-event-fx
+  ::initialize
+  (fn [_ _]
+    {:db db/default-db,
+     :dispatch [::re-graph/query q/pokemon {:pokemon-name db/default-db}
+                [::fetch-pokemon]]}))
 
 (re-frame/reg-event-db ::update-pokemon-name
                        (fn [db [_ pokemon-name]]

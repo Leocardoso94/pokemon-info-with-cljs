@@ -9,16 +9,18 @@ query ($name: String!){
     image
     name
     types
+    evolutions {id
+                name}
   }
 }
 ")
 
-(defn pokemons
-  ([] (pokemons 10))
-  ([first]
-   (str "
-  pokemons(first: " first ") {
+(def pokemons
+  "
+query ($first: Int!){
+  pokemons(first: $first) {
     id
     name
   }
-")))
+} 
+")

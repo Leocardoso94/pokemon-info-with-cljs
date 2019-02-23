@@ -12,6 +12,7 @@
 
 (rf/reg-fx :fetch
            (fn [{:keys [query variables on-error on-success]}]
+             (rf/dispatch [:add-one-request])
              (let [body (-> {:query query
                              :variables variables} clj->js js/JSON.stringify)]
                (-> (js/fetch "https://graphql-pokemon.now.sh/"
@@ -27,7 +28,8 @@
                                 (rf/dispatch (conj on-error errors))
                                 (rf/dispatch (conj on-success data))))))
                    (.catch (fn [e]
-                             (rf/dispatch (conj on-error e))))))))
+                             (rf/dispatch (conj on-error e))))
+                   (.finally #(rf/dispatch [:drop-one-request]))))))
 
 (rf/reg-event-db
  :handle-error
@@ -36,8 +38,23 @@
    db :pokemon (:pokemon data)))
 
 (rf/reg-event-db
+ :reset-pokemon
+ (fn [db _]
+   (assoc db :pokemon {})))
+
+(rf/reg-event-db
+ :drop-one-request
+ (fn [db _]
+   (update db :requests drop-last)))
+
+(rf/reg-event-db
+ :add-one-request
+ (fn [db _]
+   (update db :requests #(cons :foo %))))
+
+(rf/reg-event-db
  :handle-get-pokemon
- (fn [db [_ {:keys [pokemon]}]]
+ (fn [db [_ {:keys [pokemon] :as data}]]
    (assoc db :pokemon pokemon)))
 
 (rf/reg-event-fx
@@ -48,13 +65,27 @@
             :on-success [:handle-get-pokemon]
             :on-error [:handle-error]}}))
 
+(rf/reg-event-db
+ :handle-get-list-of-pokemons
+ (fn [db [_ {:keys [pokemons] :as data}]]
+   (assoc db :pokemons pokemons)))
+
+(rf/reg-event-fx
+ :get-list-of-pokemons
+ (fn [{:keys [db]} _]
+   {:fetch {:query q/pokemons
+            :variables {:first (+ (count (:pokemons db)) 10)}
+            :on-success [:handle-get-list-of-pokemons]
+            :on-error [:handle-error]}}))
+
 (def ^:private default-db
-  {:pokemon-name "Pikachu"
+  {:pokemon-name "Bulbasaur"
    :pokemon {}
+   :requests []
    :pokemons []})
 
 (rf/reg-event-fx
  :initialize
  (fn [_ _]
    {:db default-db
-    :dispatch [:get-pokemon (:pokemon-name default-db)]}))
+    :dispatch-n [[:get-pokemon (:pokemon-name default-db)] [:get-list-of-pokemons]]}))

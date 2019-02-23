@@ -16,3 +16,7 @@
 (rf/reg-sub
  :pokemons
  (fn [db] (:pokemons db)))
+
+(rf/reg-sub
+ :loading?
+ (fn [db] (pos? (count (:requests db)))))

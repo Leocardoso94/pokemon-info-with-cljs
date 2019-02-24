@@ -13,7 +13,7 @@
 (rf/reg-fx :fetch
   (fn [{:keys [query variables on-error on-success]}]
     (rf/dispatch [:add-one-request])
-    (let [body                (-> {:query     query,
+    (let [body                (-> {:query     query
                                    :variables variables}
                                   clj->js
                                   js/JSON.stringify)
@@ -27,8 +27,8 @@
                                     (rf/dispatch (conj on-error errors))
                                     (rf/dispatch (conj on-success data)))))]
       (-> (js/fetch "https://graphql-pokemon.now.sh/"
-                    (clj->js {:method  "POST",
-                              :headers {"Content-Type" "application/json"},
+                    (clj->js {:method  "POST"
+                              :headers {"Content-Type" "application/json"}
                               :body    body}))
           (.then on-reponse)
           (.then on-json)
@@ -54,9 +54,9 @@
 
 (rf/reg-event-fx :get-pokemon
   (fn [_ [_ pokemon-name]]
-    {:fetch {:query      q/pokemon,
-             :variables  {:name pokemon-name},
-             :on-success [:handle-get-pokemon],
+    {:fetch {:query      q/pokemon
+             :variables  {:name pokemon-name}
+             :on-success [:handle-get-pokemon]
              :on-error   [:handle-error]}}))
 
 (rf/reg-event-db :handle-get-list-of-pokemons
@@ -65,18 +65,18 @@
 
 (rf/reg-event-fx :get-list-of-pokemons
   (fn [{:keys [db]} _]
-    {:fetch {:query      q/pokemons,
-             :variables  {:first (+ (count (:pokemons db)) 10)},
-             :on-success [:handle-get-list-of-pokemons],
+    {:fetch {:query      q/pokemons
+             :variables  {:first (+ (count (:pokemons db)) 10)}
+             :on-success [:handle-get-list-of-pokemons]
              :on-error   [:handle-error]}}))
 
 (def ^:private default-db
-  {:pokemon-name "Bulbasaur",
-   :pokemon      nil,
-   :requests     [],
+  {:pokemon-name "Bulbasaur"
+   :pokemon      nil
+   :requests     []
    :pokemons     []})
 
 (rf/reg-event-fx :initialize
   (fn [_ _]
-    {:db         default-db,
+    {:db         default-db
      :dispatch-n [[:get-pokemon (:pokemon-name default-db)] [:get-list-of-pokemons]]}))

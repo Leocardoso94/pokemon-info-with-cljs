@@ -44,4 +44,5 @@
                "with-mounted-component" :flow-body}
  :fn-force-nl #{:fn :arg1-body :binding}
  :vector      {:wrap-coll? false}
- :map         {:force-nl? true}} 
+ :map         {:force-nl? true
+               :comma? false}}

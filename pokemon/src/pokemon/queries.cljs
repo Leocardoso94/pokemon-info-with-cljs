@@ -11,7 +11,7 @@ query ($name: String!){
     types
     evolutions {id
                 name}
-  }
+  } 
 }
 ")
 

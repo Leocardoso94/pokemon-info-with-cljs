@@ -4,43 +4,41 @@
    [pokemon.queries :as q]
    [re-frame.core :as rf]))
 
-(defn- get-json
-  [e]
-  (if-not (.-ok e)
-    (throw (js/Error (.-statusText e)))
-    (.json e)))
+(defn- on-reponse
+  [response]
+  (if-not (.-ok response)
+    (throw (js/Error (.-statusText response)))
+    (.json response)))
 
 (rf/reg-fx :fetch
            (fn [{:keys [query variables on-error on-success]}]
              (rf/dispatch [:add-one-request])
              (let [body (-> {:query query
-                             :variables variables} clj->js js/JSON.stringify)]
-               (-> (js/fetch "https://graphql-pokemon.now.sh/"
-                             (clj->js {:method      "POST"
-                                       :headers {"Content-Type" "application/json"}
-                                       :body        body}))
-                   (.then get-json)
-                   (.then (fn [e]
-                            (let [{:keys [data errors]} (-> e
-                                                            js->clj
-                                                            walk/keywordize-keys)]
-                              (if errors
-                                (rf/dispatch (conj on-error errors))
-                                (rf/dispatch (conj on-success data))))))
-                   (.catch (fn [e]
-                             (rf/dispatch (conj on-error e))))
-                   (.finally #(rf/dispatch [:drop-one-request]))))))
+                             :variables variables} clj->js js/JSON.stringify)
+                   on-unexpected-error (fn [e]
+                                         (rf/dispatch (conj on-error e)))
+                   on-json (fn [json]
+                             (let [{:keys [data errors]} (-> json
+                                                             js->clj
+                                                             walk/keywordize-keys)]
+                               (if errors
+                                 (rf/dispatch (conj on-error errors))
+                                 (rf/dispatch (conj on-success data)))))]
+               (->
+                (js/fetch "https://graphql-pokemon.now.sh/"
+                          (clj->js {:method      "POST"
+                                    :headers {"Content-Type" "application/json"}
+                                    :body        body}))
+                (.then on-reponse)
+                (.then on-json)
+                (.catch on-unexpected-error)
+                (.finally #(rf/dispatch [:drop-one-request]))))))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :handle-error
- (fn [db [_ data]]
+ (fn [_ [_ data]]
    (js/console.log "Error: " data)
-   db :pokemon (:pokemon data)))
-
-(rf/reg-event-db
- :reset-pokemon
- (fn [db _]
-   (assoc db :pokemon {})))
+   {}))
 
 (rf/reg-event-db
  :drop-one-request
@@ -54,7 +52,7 @@
 
 (rf/reg-event-db
  :handle-get-pokemon
- (fn [db [_ {:keys [pokemon] :as data}]]
+ (fn [db [_ {:keys [pokemon]}]]
    (assoc db :pokemon pokemon)))
 
 (rf/reg-event-fx
@@ -67,7 +65,7 @@
 
 (rf/reg-event-db
  :handle-get-list-of-pokemons
- (fn [db [_ {:keys [pokemons] :as data}]]
+ (fn [db [_ {:keys [pokemons]}]]
    (assoc db :pokemons pokemons)))
 
 (rf/reg-event-fx
@@ -80,7 +78,7 @@
 
 (def ^:private default-db
   {:pokemon-name "Bulbasaur"
-   :pokemon {}
+   :pokemon nil
    :requests []
    :pokemons []})
 
@@ -88,4 +86,5 @@
  :initialize
  (fn [_ _]
    {:db default-db
-    :dispatch-n [[:get-pokemon (:pokemon-name default-db)] [:get-list-of-pokemons]]}))
+    :dispatch-n [[:get-pokemon (:pokemon-name default-db)]
+                 [:get-list-of-pokemons]]}))
